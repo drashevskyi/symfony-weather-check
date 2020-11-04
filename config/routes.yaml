@@ -1,0 +1,11 @@
+index:
+    path: /
+    controller: App\Controller\WeatherController::indexAction
+    
+get_weather:
+    path: /get_weather
+    controller: App\Controller\WeatherController::getWeatherAction  
+    
+get_alt_weather:
+    path: /get_alt_weather
+    controller: App\Controller\WeatherController::getAlternativeWeatherAction      

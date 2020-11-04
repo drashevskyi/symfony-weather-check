@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Weather{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        {% block head_css %}
+            <style>
+                .table-city td{
+                    width: 150px;
+                }
+            </style>
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        {% endblock %}
+        {% block head_js %}
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>        
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+                <a class="navbar-brand" href="{{ path('index') }}">{{ 'WeatherInfo'|trans }}</a>
+            </nav>
+            <div class="container">
+                <div class="row mt-4">
+                    <div class="col-sm-4">
+                        {{ form_start(form) }}
+                            {{ form_widget(form.ApiKey) }}
+                        <div class="input-group">
+                            {{ form_widget(form.city) }}
+                            <div class="input-group-append">
+                            {{ form_widget(form.submit, { 'label': '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                             <path fill-rule="evenodd" d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>', 'label_html' : true })}}
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                    <div class="col-sm-6 cities" style="visibility: hidden;">
+                        <ul class="nav nav-tabs"></ul>
+                        <div class="tab-content"></div>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+        {% block javascripts %}
+            <script>
+                //get weather from data provider
+                $(document).ready(function() {
+                    var cities = new Array();
+                    var frm = $('form');
+                    
+                    frm.submit(function (ev) {
+                        $.ajax({
+                            type: frm.attr('method'),
+                            url: frm.attr('action'),
+                            data: frm.serialize(),
+                            success: function (data) {
+                                if (data == '') {
+                                    alert('{{ "tryAgain"|trans }}');
+                                    return false;
+                                }
+                                
+                                var city = $($(data)[0]).find('.cityName').text();
+                                //to check if this city added already
+                                if (cities.includes(city)) {
+                                    alert('{{ "cityExists"|trans }}');
+                                    return false;
+                                }
+                                
+                                $(".nav-link").each(function( index ) {
+                                    $(this).removeClass('active');
+                                });
+                                
+                                $(".tab-pane").each(function( index ) {
+                                    $(this).removeClass('active');
+                                });
+                                
+                                $('.nav-tabs').append('<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#' + city.replace(/\s/g, '') + '">' + city + '</a></li>');
+                                $('.tab-content').append(data);
+                                cities.push(city);
+                                $('.cities').css('visibility', 'visible');
+                            }
+                        });
+                        
+                        ev.preventDefault();
+                    });
+                });
+                //get weather from alternative data provider
+                $(document).on('click', ".alt-weather" , function() {
+                    var button = $(this);
+                    var city = button.attr("data-city");
+                    button.attr("disabled", true);
+                    
+                    $.ajax({
+                        url: "{{ path('get_alt_weather') }}",
+                        data: {city: city},
+                        success: function(data){
+                            if (data == '') {
+                                alert('{{ "NotAvailable"|trans }}');
+                                button.attr("disabled", false);
+                                return false;
+                            }
+                            
+                            $('#' + city.replace(/\s/g, '') + "-alt").append(data);
+                            button.hide();
+                        }
+                    });
+                });
+            </script>
+        {% endblock %}
+    </body>
+</html>

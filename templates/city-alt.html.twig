@@ -1,0 +1,18 @@
+{% if info is not null %}
+    <table class="table table-borderless table-city">
+        <tbody style="text-align: left;">
+            <tr>
+                <td>{{ 'Temperature'|trans }} C</td>
+                <td>{{ info.current.temp_c }}</td>
+            </tr>
+            <tr>
+                <td>{{ 'Temperature'|trans }} F</td>
+                <td>{{ info.current.temp_f }}</td>
+            </tr>
+            <tr>
+                <td style="padding-top: 30px;">{{ 'Weather'|trans }}</td>
+                <td>{{ info.current.condition.text }} <img src="{{ info.current.condition.icon }}"></td>
+            </tr>
+        </tbody>
+    </table>
+{% endif %}

@@ -1,0 +1,11 @@
+cityExists: Information on weather in this city is already obtained. Please try different city.
+WeatherInfo: WeatherInfo
+tryAgain: Please check the data in the form and try again.
+Country: Country
+City: City
+Weather: Weather
+Temperature: Temperature
+Wind speed: Wind speed
+GetAltWeather: Get weather from alternative data provider
+NotAvailable: Sorry, service is not available right now. Please try again later.
+API Key: API Key

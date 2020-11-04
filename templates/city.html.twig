@@ -1,0 +1,28 @@
+{% if info is not null %}
+    <div class="tab-pane container active" id="{{ info.name|replace({' ': ''}) }}">
+    <table class="table table-borderless table-city">
+        <tbody style="text-align: left;">
+            <tr>
+                <td>{{ 'Country'|trans }}</td>
+                <td>{{ info.sys.country }}</td>
+            </tr>
+            <tr>
+                <td>{{ 'City'|trans }}</td>
+                <td class="cityName">{{ info.name }}</td>
+            </tr>
+            <tr>
+                <td>{{ 'Weather'|trans }}</td>
+                <td>{{ info.weather[0].description }}</td>
+            </tr>
+            <tr>
+                <td>{{ 'Wind speed'|trans }}</td>
+                <td>{{ info.wind.speed }}</td>
+            </tr>
+        </tbody>
+        </table>
+        <button type="button" class="btn btn-outline-primary alt-weather" data-city="{{ info.name }}">
+            {{ 'GetAltWeather'|trans }}
+        </button>
+        <div id="{{ info.name|replace({' ': ''}) }}-alt"></div>
+    </div>
+{% endif %}
